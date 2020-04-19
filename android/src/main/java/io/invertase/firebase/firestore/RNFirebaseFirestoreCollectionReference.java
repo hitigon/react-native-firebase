@@ -46,6 +46,7 @@ class RNFirebaseFirestoreCollectionReference {
     ReactContext reactContext,
     String appName,
     String path,
+    boolean isCollectionGroup,
     ReadableArray filters,
     ReadableArray orders,
     ReadableMap options
@@ -55,7 +56,7 @@ class RNFirebaseFirestoreCollectionReference {
     this.filters = filters;
     this.orders = orders;
     this.options = options;
-    this.query = buildQuery();
+    this.query = buildQuery(isCollectionGroup);
     this.reactContext = reactContext;
   }
 
@@ -152,9 +153,14 @@ class RNFirebaseFirestoreCollectionReference {
     return !collectionSnapshotListeners.isEmpty();
   }
 
-  private Query buildQuery() {
+  private Query buildQuery(boolean isCollectionGroup) {
     FirebaseFirestore firestore = RNFirebaseFirestore.getFirestoreForApp(appName);
-    Query query = firestore.collection(path);
+    Query query;
+    if (isCollectionGroup) {
+      query = firestore.collectionGroup(path);
+    } else {
+      query = firestore.collection(path);
+    }
     query = applyFilters(firestore, query);
     query = applyOrders(query);
     query = applyOptions(firestore, query);
