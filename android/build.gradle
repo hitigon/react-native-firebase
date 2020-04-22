@@ -161,7 +161,7 @@ dependencies {
    * ------------------------- */
 
   // Ads
-  compileOnly "com.google.firebase:firebase-ads:17.2.1" 
+  compileOnly "com.google.firebase:firebase-ads:17.2.1"
   // Authentication
   compileOnly "com.google.firebase:firebase-auth:17.0.0"
   // Analytics
@@ -180,7 +180,7 @@ dependencies {
   // Cloud Functions
   compileOnly "com.google.firebase:firebase-functions:17.0.0"
   // Cloud Firestore
-  compileOnly "com.google.firebase:firebase-firestore:19.0.2"
+  compileOnly "com.google.firebase:firebase-firestore:21.4.2"
   // Cloud Messaging / FCM
   compileOnly "com.google.firebase:firebase-messaging:18.0.0"
   // Crashlytics
