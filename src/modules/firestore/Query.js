@@ -36,6 +36,8 @@ const OPERATORS: { [QueryOperator]: string } = {
   '<': 'LESS_THAN',
   '<=': 'LESS_THAN_OR_EQUAL',
   'array-contains': 'ARRAY_CONTAINS',
+  'array-contains-any': 'ARRAY_CONTAINS_ANY',
+  in: 'IN',
 };
 
 type NativeFieldPath = {|
@@ -101,9 +103,12 @@ export default class Query {
 
   _referencePath: Path;
 
+  _type: string;
+
   constructor(
     firestore: Firestore,
     path: Path,
+    type?: string,
     fieldFilters?: FieldFilter[],
     fieldOrders?: FieldOrder[],
     queryOptions?: QueryOptions
@@ -113,6 +118,7 @@ export default class Query {
     this._firestore = firestore;
     this._queryOptions = queryOptions || {};
     this._referencePath = path;
+    this._type = type || 'collection';
   }
 
   get firestore(): Firestore {
@@ -128,6 +134,7 @@ export default class Query {
     return new Query(
       this.firestore,
       this._referencePath,
+      this._type,
       this._fieldFilters,
       this._fieldOrders,
       options
@@ -143,6 +150,7 @@ export default class Query {
     return new Query(
       this.firestore,
       this._referencePath,
+      this._type,
       this._fieldFilters,
       this._fieldOrders,
       options
@@ -173,6 +181,7 @@ export default class Query {
     return getNativeModule(this._firestore)
       .collectionGet(
         this._referencePath.relativeName,
+        this._type === 'collectionGroup',
         this._fieldFilters,
         this._fieldOrders,
         this._queryOptions,
@@ -259,6 +268,7 @@ export default class Query {
     return new Query(
       this.firestore,
       this._referencePath,
+      this._type,
       this._fieldFilters,
       this._fieldOrders,
       options
@@ -401,6 +411,7 @@ export default class Query {
     // Add the native listener
     getNativeModule(this._firestore).collectionOnSnapshot(
       this._referencePath.relativeName,
+      this._type === 'collectionGroup',
       this._fieldFilters,
       this._fieldOrders,
       this._queryOptions,
@@ -453,6 +464,7 @@ export default class Query {
     return new Query(
       this.firestore,
       this._referencePath,
+      this._type,
       this._fieldFilters,
       combinedOrders,
       this._queryOptions
@@ -468,6 +480,7 @@ export default class Query {
     return new Query(
       this.firestore,
       this._referencePath,
+      this._type,
       this._fieldFilters,
       this._fieldOrders,
       options
@@ -483,6 +496,7 @@ export default class Query {
     return new Query(
       this.firestore,
       this._referencePath,
+      this._type,
       this._fieldFilters,
       this._fieldOrders,
       options
@@ -508,6 +522,7 @@ export default class Query {
     return new Query(
       this.firestore,
       this._referencePath,
+      this._type,
       combinedFilters,
       this._fieldOrders,
       this._queryOptions

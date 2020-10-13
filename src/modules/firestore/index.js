@@ -12,6 +12,7 @@ import FieldPath from './FieldPath';
 import FieldValue from './FieldValue';
 import GeoPoint from './GeoPoint';
 import Blob from './Blob';
+import Query from './Query';
 import Path from './Path';
 import WriteBatch from './WriteBatch';
 import TransactionHandler from './TransactionHandler';
@@ -128,6 +129,11 @@ export default class Firestore extends ModuleBase {
     }
 
     return new CollectionReference(this, path);
+  }
+
+  collectionGroup(collectionId: string): Query {
+    const path = this._referencePath.child(collectionId);
+    return new Query(this, path, 'collectionGroup');
   }
 
   disableNetwork(): void {

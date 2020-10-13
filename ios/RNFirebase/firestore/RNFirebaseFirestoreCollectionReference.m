@@ -9,6 +9,7 @@ static NSMutableDictionary *_listeners;
 - (id)initWithPathAndModifiers:(RCTEventEmitter *)emitter
                 appDisplayName:(NSString *)appDisplayName
                           path:(NSString *)path
+             isCollectionGroup:(BOOL)isCollectionGroup
                        filters:(NSArray *)filters
                         orders:(NSArray *)orders
                        options:(NSDictionary *)options {
@@ -20,7 +21,7 @@ static NSMutableDictionary *_listeners;
     _filters = filters;
     _orders = orders;
     _options = options;
-    _query = [self buildQuery];
+    _query = [self buildQuery:isCollectionGroup];
   }
   // Initialise the static listeners object if required
   if (!_listeners) {
@@ -91,9 +92,14 @@ queryListenOptions:(NSDictionary *)queryListenOptions {
   }
 }
 
-- (FIRQuery *)buildQuery {
+- (FIRQuery *)buildQuery:(BOOL) isCollectionGroup {
   FIRFirestore *firestore = [RNFirebaseFirestore getFirestoreForApp:_appDisplayName];
-  FIRQuery *query = (FIRQuery *) [firestore collectionWithPath:_path];
+  FIRQuery *query;
+  if (isCollectionGroup) {
+    query = (FIRQuery *) [firestore collectionGroupWithID:_path];
+  } else {
+    query = (FIRQuery *) [firestore collectionWithPath:_path];
+  }
   query = [self applyFilters:firestore query:query];
   query = [self applyOrders:query];
   query = [self applyOptions:firestore query:query];
@@ -124,6 +130,10 @@ queryListenOptions:(NSDictionary *)queryListenOptions {
         query = [query queryWhereField:fieldPath isLessThanOrEqualTo:value];
       } else if ([operator isEqualToString:@"ARRAY_CONTAINS"]) {
         query = [query queryWhereField:fieldPath arrayContains:value];
+      } else if ([operator isEqualToString:@"ARRAY_CONTAINS_ANY"]) {
+        query = [query queryWhereField:fieldPath arrayContainsAny:value];
+      } else if ([operator isEqualToString:@"IN"]) {
+        query = [query queryWhereField:fieldPath in:value];
       }
     } else {
       NSArray *fieldPathElements = fieldPathDictionary[@"elements"];
@@ -140,6 +150,10 @@ queryListenOptions:(NSDictionary *)queryListenOptions {
         query = [query queryWhereFieldPath:fieldPath isLessThanOrEqualTo:value];
       } else if ([operator isEqualToString:@"ARRAY_CONTAINS"]) {
         query = [query queryWhereFieldPath:fieldPath arrayContains:value];
+      } else if ([operator isEqualToString:@"ARRAY_CONTAINS_ANY"]) {
+        query = [query queryWhereFieldPath:fieldPath arrayContainsAny:value];
+      } else if ([operator isEqualToString:@"IN"]) {
+        query = [query queryWhereFieldPath:fieldPath in:value];
       }
     }
   }

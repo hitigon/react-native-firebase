@@ -245,13 +245,14 @@ RCT_EXPORT_METHOD(enableNetwork:(NSString *)appDisplayName
 
 RCT_EXPORT_METHOD(collectionGet:(NSString *)appDisplayName
                   path:(NSString *)path
+                  isCollectionGroup:(BOOL)isCollectionGroup
                   filters:(NSArray *)filters
                   orders:(NSArray *)orders
                   options:(NSDictionary *)options
                   getOptions:(NSDictionary *)getOptions
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
-    [[self getCollectionForAppPath:appDisplayName path:path filters:filters orders:orders options:options] get:getOptions resolver:resolve rejecter:reject];
+    [[self getCollectionForAppPath:appDisplayName path:path isCollectionGroup:isCollectionGroup filters:filters orders:orders options:options] get:getOptions resolver:resolve rejecter:reject];
 }
 
 RCT_EXPORT_METHOD(collectionOffSnapshot:(NSString *)appDisplayName
@@ -265,12 +266,13 @@ RCT_EXPORT_METHOD(collectionOffSnapshot:(NSString *)appDisplayName
 
 RCT_EXPORT_METHOD(collectionOnSnapshot:(NSString *)appDisplayName
                   path:(NSString *)path
+                  isCollectionGroup:(BOOL)isCollectionGroup
                   filters:(NSArray *)filters
                   orders:(NSArray *)orders
                   options:(NSDictionary *)options
                   listenerId:(nonnull NSString *)listenerId
                   queryListenOptions:(NSDictionary *)queryListenOptions) {
-    RNFirebaseFirestoreCollectionReference *ref = [self getCollectionForAppPath:appDisplayName path:path filters:filters orders:orders options:options];
+    RNFirebaseFirestoreCollectionReference *ref = [self getCollectionForAppPath:appDisplayName path:path isCollectionGroup:isCollectionGroup filters:filters orders:orders options:options];
     [ref onSnapshot:listenerId queryListenOptions:queryListenOptions];
 }
 
@@ -419,8 +421,8 @@ RCT_EXPORT_METHOD(settings:(NSString *)appDisplayName
     return firestore;
 }
 
-- (RNFirebaseFirestoreCollectionReference *)getCollectionForAppPath:(NSString *)appDisplayName path:(NSString *)path filters:(NSArray *)filters orders:(NSArray *)orders options:(NSDictionary *)options {
-    return [[RNFirebaseFirestoreCollectionReference alloc] initWithPathAndModifiers:self appDisplayName:appDisplayName path:path filters:filters orders:orders options:options];
+- (RNFirebaseFirestoreCollectionReference *)getCollectionForAppPath:(NSString *)appDisplayName path:(NSString *)path isCollectionGroup:(BOOL)isCollectionGroup filters:(NSArray *)filters orders:(NSArray *)orders options:(NSDictionary *)options {
+    return [[RNFirebaseFirestoreCollectionReference alloc] initWithPathAndModifiers:self appDisplayName:appDisplayName path:path isCollectionGroup:isCollectionGroup filters:filters orders:orders options:options];
 }
 
 - (RNFirebaseFirestoreDocumentReference *)getDocumentForAppPath:(NSString *)appDisplayName path:(NSString *)path {

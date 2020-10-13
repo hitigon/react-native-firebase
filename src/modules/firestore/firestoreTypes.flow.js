@@ -16,7 +16,9 @@ export type QueryOperator =
   | '=='
   | '>'
   | '>='
-  | 'array-contains';
+  | 'array-contains'
+  | 'array-contains-any'
+  | 'in';
 
 export type GetOptions = {
   source: 'default' | 'server' | 'cache',

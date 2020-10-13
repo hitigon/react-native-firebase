@@ -284,13 +284,14 @@ public class RNFirebaseFirestore extends ReactContextBaseJavaModule {
 
   @ReactMethod
   public void collectionGet(
-    String appName, String path, ReadableArray filters,
+    String appName, String path, boolean isCollectionGroup, ReadableArray filters,
     ReadableArray orders, ReadableMap options, ReadableMap getOptions,
     final Promise promise
   ) {
     RNFirebaseFirestoreCollectionReference ref = getCollectionForAppPath(
       appName,
       path,
+      isCollectionGroup,
       filters,
       orders,
       options
@@ -308,13 +309,14 @@ public class RNFirebaseFirestore extends ReactContextBaseJavaModule {
 
   @ReactMethod
   public void collectionOnSnapshot(
-    String appName, String path, ReadableArray filters,
+    String appName, String path, boolean isCollectionGroup, ReadableArray filters,
     ReadableArray orders, ReadableMap options, String listenerId,
     ReadableMap queryListenOptions
   ) {
     RNFirebaseFirestoreCollectionReference ref = getCollectionForAppPath(
       appName,
       path,
+      isCollectionGroup,
       filters,
       orders,
       options
@@ -715,6 +717,7 @@ public class RNFirebaseFirestore extends ReactContextBaseJavaModule {
    */
   private RNFirebaseFirestoreCollectionReference getCollectionForAppPath(
     String appName, String path,
+    boolean isCollectionGroup,
     ReadableArray filters,
     ReadableArray orders,
     ReadableMap options
@@ -723,6 +726,7 @@ public class RNFirebaseFirestore extends ReactContextBaseJavaModule {
       this.getReactApplicationContext(),
       appName,
       path,
+      isCollectionGroup,
       filters,
       orders,
       options
